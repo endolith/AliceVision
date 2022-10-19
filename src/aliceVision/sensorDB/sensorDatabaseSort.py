@@ -17,20 +17,12 @@ parser.add_argument('-o', '--output', metavar='outputSensorDatabase.txt', requir
 
 args = parser.parse_args()
 
-# read
-file = open(args.input, "r")
-database = file.readlines()
-file.close()
-
+with open(args.input, "r") as file:
+	database = file.readlines()
 # process
 sensors = [entry.split(';')  for entry in database]
 sensors.sort(key=lambda t : tuple(s.lower() if isinstance(s,basestring) else s for s in t))
-outDatabase = ""
-for entry in sensors:
-	outDatabase += ';'.join(entry)
-
-# write
-file = open(args.output, "w")
-file.write(outDatabase)
-file.close()
+outDatabase = "".join(';'.join(entry) for entry in sensors)
+with open(args.output, "w") as file:
+	file.write(outDatabase)
 
